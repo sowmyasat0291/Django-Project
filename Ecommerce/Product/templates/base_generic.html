@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My E-commerce Site{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My E-commerce Site</h1>
+    </header>
+
+    <div>
+        {% block content %}
+        <!-- Page-specific content goes here -->
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2024 My E-commerce Site</p>
+    </footer>
+</body>
+</html>
