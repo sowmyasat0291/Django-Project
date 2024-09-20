@@ -1,21 +1,25 @@
-# views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, ProductForm
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views import View
 from .models import Product
-from django.shortcuts import get_object_or_404
-import json
-
+from django.core.mail import send_mail
+from django.conf import settings
 
 def signup_view(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            # Optionally send a welcome email or an email verification link
+            send_mail(
+                'Welcome to Our Platform',
+                'Thank you for signing up!',
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
             return redirect('login')
     else:
         form = SignUpForm()
@@ -37,31 +41,19 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'products/login.html', {'form': form})
 
+@login_required
 def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'products/product_list.html', {'products': products})
-
-class ProductListCreateView(View):
-    def get(self, request):
+    # Optional: Add search functionality
+    search_query = request.GET.get('search', '')
+    if search_query:
+        products = Product.objects.filter(name__icontains=search_query)
+    else:
         products = Product.objects.all()
-        data = list(products.values('id', 'name', 'price', 'description'))
-        return JsonResponse(data, safe=False)
+    
+    # Optional: Add pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(products, 10)  # Show 10 products per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    @csrf_exempt
-    def post(self, request):
-        data = json.loads(request.body)
-        form = ProductForm(data)
-        if form.is_valid():
-            product = form.save()
-            return JsonResponse({'id': product.id, 'name': product.name, 'price': product.price, 'description': product.description}, status=201)
-        return JsonResponse({'errors': form.errors}, status=400)
-
-class ProductDetailView(View):
-    def get(self, request, pk, *args, **kwargs):
-        product = get_object_or_404(Product, pk=pk)
-        data = {
-            'name': product.name,
-            'price': str(product.price),
-            'description': product.description
-        }
-        return JsonResponse(data)
+    return render(request, 'products/product_list.html', {'page_obj': page_obj})

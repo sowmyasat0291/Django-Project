@@ -19,8 +19,4 @@ class ProductForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
-    def clean_price(self):
-        price = self.cleaned_data.get('price')
-        if price <= 0:
-            raise forms.ValidationError("Price must be a positive number.")
-        return price
+    

@@ -6,8 +6,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('product/', product_list, name='product_list'),
-    path('api/products/', ProductListCreateView.as_view(), name='product_list_create'),
-    path('api/products/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
 ]
 
 
