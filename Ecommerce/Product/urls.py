@@ -1,16 +1,11 @@
-from django.urls import path, include
-from django.contrib.auth.views import LogoutView
-from .views import signup_view, login_view,  product_list, ProductListCreateView, ProductDetailView
+from django.urls import path
+from .views import index_view, signup_view, login_view, product_list, cart_view, logout_view
+
 urlpatterns = [
+    path('', index_view, name='index'),  # Redirects to login or product list
     path('signup/', signup_view, name='signup'),
     path('login/', login_view, name='login'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', logout_view, name='logout'),
     path('product/', product_list, name='product_list'),
+    path('cart/', cart_view, name='cart'),  # Cart view
 ]
-
-
-
-
-
-    
-

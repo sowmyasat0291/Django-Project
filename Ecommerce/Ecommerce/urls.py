@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Product.urls')),  # Including the product URLs
-    path('cart/', include('Cart.urls')),  # Assuming your cart app is named 'Cart'
+    path('', include('Cart.urls')),  # Assuming your cart app is named 'Cart'
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # JWT Token endpoint
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # JWT Token refresh
+
 ]
