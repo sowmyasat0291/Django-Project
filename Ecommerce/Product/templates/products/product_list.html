@@ -1,14 +1,39 @@
-{% extends "base_generic.html" %}
-{% block content %}
-  <h2>Product</h2>
-  <ul>
-    {% for product in Product %}
-      <li>{{ product.name }} - ${{ product.price }}</li>
-    {% endfor %}
-  </ul>
-  <form method="POST" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Product List</h1>
+    
+    <form method="get" action="{% url 'product_list' %}">
+        <input type="text" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
+        <button type="submit">Search</button>
+    </form>
 
-{% endblock %}
+    <ul>
+        {% for product in page_obj %}
+        <li>{{ product.name }} - {{ product.price }}$</li>
+        <a href="{% url 'update_product' product.pk %}">Update</a>
+        {% endfor %}
+    </ul>
+
+    <div>
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ page_obj.previous_page_number }}">&lsaquo; prev</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next &rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'create_product' %}">Create New Product</a>
+</body>
+</html>
