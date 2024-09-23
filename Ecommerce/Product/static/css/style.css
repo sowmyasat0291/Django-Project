@@ -11,6 +11,12 @@ body {
     line-height: 1.6;
     background-color: #f9f9f9;
     color: #333;
+    background-image: url('../images/ecommerce-website-design.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
 }
 
 /* Header styles */
@@ -36,10 +42,19 @@ form {
     margin-bottom: 20px;
 }
 
-input[type="text"] {
+input[type="text"], input[type="password"], input[type=" email"], input[type=" URL"]{
     padding: 10px;
-    width: calc(100% - 22px);
-    margin-right: 10px;
+    width: 90%;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+    outline: none;
+    font-size: 16px;
+    font-weight: bold;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
 }
 
 button {
@@ -82,4 +97,19 @@ div.pagination a {
 div.pagination a:hover {
     background: #4CAF50;
     color: white;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    
 }

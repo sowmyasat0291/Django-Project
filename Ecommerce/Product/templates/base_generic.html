@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My E-commerce Site{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <header>
         <h1>Welcome to My E-commerce Site</h1>
     </header>
 
-    <div>
+    <div class = 'container'>
         {% block content %}
         <!-- Page-specific content goes here -->
         {% endblock %}

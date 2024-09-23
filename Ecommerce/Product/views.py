@@ -55,9 +55,9 @@ def login_view(request):
 def product_list(request):
     search_query = request.GET.get('search', '')
     if search_query:
-        products = Product.objects.filter(name__icontains=search_query)
+        products = Product.objects.filter(name__icontains=search_query).order_by('name')
     else:
-        products = Product.objects.all()
+        products = Product.objects.all().order_by('name')
     
     paginator = Paginator(products, 10)  # Show 10 products per page
     page_number = request.GET.get('page')
