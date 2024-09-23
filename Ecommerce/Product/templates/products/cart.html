@@ -1,17 +1,15 @@
-<!-- cart.html -->
-{% load static %}  <!-- Load the static files tag library -->
+{% load static %}  
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">  <!-- Link to your CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> 
 </head>
 <body>
     <h1>Your Cart</h1>
     <p>Your cart is currently empty.</p>
-    <!-- Add logic to display cart items here -->
     <a href="{% url 'product_list' %}">Continue Shopping</a>
 </body>
 </html>
