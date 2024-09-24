@@ -76,6 +76,8 @@ def create_product(request):
             return redirect('product_list')  # Redirect to product list after creation
     else:
         form = ProductForm()
+    css_link = '<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">'
+
     context = {'form': form, 'action': 'Create'}
     return render(request, 'products/product_form.html', context)
 # Update an existing product
@@ -89,6 +91,8 @@ def update_product(request, pk):
             return redirect('product_list')  # Redirect to product list after updating
     else:
         form = ProductForm(instance=product)
+    css_link = '<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">'
+
     return render(request, 'products/product_form.html', {'form': form, 'action': 'Update'})
 @login_required
 def delete_product(request, pk):

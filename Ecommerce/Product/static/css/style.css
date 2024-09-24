@@ -21,21 +21,42 @@ header {
     text-align: center;
 }
 
-/* Search form styles */
-.search-form {
-    margin: 20px auto;
-    text-align: center;
+/* Form container styles */
+.form-container {
+    max-width: 600px; /* Limit width for better readability */
+    margin: 20px auto; /* Center form on page */
+    padding: 20px;
+    background: #fff; /* White background for the form */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.search-form input[type="text"] {
+/* Form heading styles */
+.form-container h1 {
+    text-align: center;
+    margin-bottom: 20px; /* Space below heading */
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input styles */
+form input[type="text"],
+form input[type="number"],
+form input[type="file"],
+form select {
     padding: 10px;
-    width: 200px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    margin-bottom: 10px; /* Space between inputs */
 }
 
-.search-form button {
-    padding: 10px 15px;
+/* Button styles */
+form button {
+    padding: 10px;
     background: #4CAF50;
     color: white;
     border: none;
@@ -43,11 +64,24 @@ header {
     cursor: pointer;
 }
 
-.search-form button:hover {
-    background: #45a049;
+form button:hover {
+    background: #45a049; /* Darker green on hover */
 }
 
-/* Product container styles */
+/* Back link styles */
+a {
+    text-align: center;
+    display: block;
+    margin-top: 20px;
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline; /* Underline on hover for better UX */
+}
+
+/* General styling for other elements (like product cards) remains unchanged */
 .product-container {
     display: flex;
     flex-wrap: wrap;
@@ -55,7 +89,6 @@ header {
     padding: 20px;
 }
 
-/* Product card styles */
 .product-card {
     background: #fff;
     border: 1px solid #ddd;
@@ -84,12 +117,7 @@ header {
     color: #4CAF50;
 }
 
-/* Product actions styles */
-.product-actions {
-    margin-top: 10px;
-}
-
-/* Button styles */
+/* Button styles for update and delete actions */
 .update-button, .delete-button {
     padding: 5px 10px;
     margin: 5px;
