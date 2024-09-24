@@ -12,14 +12,18 @@
         <input type="text" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
         <button type="submit">Search</button>
     </form>
+    {% load static %}
 
     <ul>
         {% for product in page_obj %}
         <li>
-            {{ product.name }} - {{ product.price }}$
-            <!-- Update button styled as a button instead of a link -->
+            {{ product.name }} - ₹{{ product.price }}
+            {% if product.banner %}
+            <img src="{{ product.banner.url }}" alt="{{ product.name }} Image" style="max-width: 100px; max-height: 100px;">
+            
+                {% endif %}
         <form action="{% url 'update_product' product.pk %}" method="get" style="display:inline;">
-            <button type="submit" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; cursor: pointer;">
+            <button type="submit">
                 Update
             </button>
         </form>

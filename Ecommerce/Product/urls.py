@@ -1,5 +1,7 @@
 from django.urls import path
 from .views import index_view, signup_view, login_view, logout_view, product_list, create_product, update_product, cart_view, delete_product
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', index_view, name='index'), 
@@ -11,4 +13,6 @@ urlpatterns = [
     path('products/update/<int:pk>/', update_product, name='update_product'),
     path('products/delete/<int:pk>/', delete_product, name='delete_product'),
     path('cart/', cart_view, name='cart'),  # Cart view
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
