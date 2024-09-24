@@ -3,7 +3,6 @@ from Product.models import Product  # Make sure this import is correct
 
 class Cart(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
-    # Additional fields for the Cart can be added here
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)

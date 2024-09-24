@@ -26,5 +26,13 @@ def remove_from_cart(request, product_id):
     return redirect('cart')
 
 def view_cart(request):
-    # Logic to retrieve cart items would go here
-    return render(request, 'cart.html')  # Adjust this path if needed
+    cart_items = CartItem.objects.filter(cart=request.session['cart_id'])  
+    for item in cart_items:
+        item.total = item.product.price * item.quantity
+    
+    total_amount = sum(item.total for item in cart_items)    
+    context = {
+        'cart_items': cart_items,
+        'total_amount': total_amount,
+    }
+    return render(request, 'cart.html')  

@@ -23,12 +23,15 @@ header {
 
 /* Form container styles */
 .form-container {
-    max-width: 600px; /* Limit width for better readability */
+    max-width: 400px; /* Set to a reasonable width */
     margin: 20px auto; /* Center form on page */
     padding: 20px;
     background: #fff; /* White background for the form */
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Align children in a column */
+    align-items: center; /* Center children horizontally */
 }
 
 /* Form heading styles */
@@ -41,6 +44,7 @@ header {
 form {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 /* Input styles */
@@ -52,6 +56,8 @@ form select {
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-bottom: 10px; /* Space between inputs */
+    text-align: center;
+    justify-content: center;
 }
 
 /* Button styles */
@@ -62,8 +68,8 @@ form button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    width: 100%; /* Set button to take full width */
 }
-
 form button:hover {
     background: #45a049; /* Darker green on hover */
 }
