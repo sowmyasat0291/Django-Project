@@ -106,7 +106,7 @@ def delete_product(request, pk):
 # View Cart (Dummy for now, implement as per your logic)
 @login_required
 def cart_view(request):
-    return render(request, 'products/cart.html')
+    return render(request, 'cart/cart.html')
 
 # Logout view
 def logout_view(request):
