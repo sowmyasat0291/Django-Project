@@ -1,3 +1,4 @@
+#Product/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -7,6 +8,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 from .forms import SignUpForm, ProductForm
+from Cart.models import Cart, CartItem  # Import the Cart and CartItem models
 from .models import Product
 
 # Redirect to signup or login based on user authentication
@@ -106,6 +108,14 @@ def delete_product(request, pk):
 # View Cart (Dummy for now, implement as per your logic)
 @login_required
 def cart_view(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    total_amount = sum(item.product.price * item.quantity for item in cart_items)
+    
+    context = {
+        'cart_items': cart_items,
+        'total_amount': total_amount,
+    }
     return render(request, 'cart/cart.html')
 
 # Logout view

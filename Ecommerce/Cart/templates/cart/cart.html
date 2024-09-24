@@ -1,23 +1,26 @@
-<h1>Your Shopping Cart</h1>
 <table>
-    <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Action</th>
-        <th>Total Amount</th>
-
-    </tr>
-    {% for item in items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>₹ {{ item.product.price }}</td>
-        <td>
-            <a href="{% url 'remove_from_cart' item.product.id %}">Remove</a>
-        </td>
-        <td>{{ item.total }}</td> 
-    </tr>
-    {% endfor %}
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.product.price }}</td>
+            <td>{{ item.total }}</td>
+            <td>
+                <a href="{% url 'remove_from_cart' item.product.id %}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
-<h2>Total: ₹ {{ total_price }}</h2>
+
+<p>Total Amount: {{ total_amount }}</p>
