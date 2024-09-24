@@ -13,11 +13,11 @@ class SignUpForm(UserCreationForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'description', 'stock']
+        fields = ['name', 'price', 'description', 'stock', 'banner']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'stock': forms.NumberInput(attrs={'class': 'form-control'}),  # Add 'stock' field with NumberInput widget to show stock quantity in the form.
+            'stock': forms.NumberInput(attrs={'class': 'form-control'}), # Add 'stock' field with NumberInput widget to show stock quantity in the form.
         }
     

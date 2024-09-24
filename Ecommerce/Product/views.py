@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib import messages
 from .forms import SignUpForm, ProductForm
 from .models import Product
 
@@ -75,8 +76,8 @@ def create_product(request):
             return redirect('product_list')  # Redirect to product list after creation
     else:
         form = ProductForm()
-    return render(request, 'products/product_form.html', {'form': form, 'action': 'Create'})
-
+    context = {'form': form, 'action': 'Create'}
+    return render(request, 'products/product_form.html', context)
 # Update an existing product
 @login_required
 def update_product(request, pk):
@@ -89,6 +90,14 @@ def update_product(request, pk):
     else:
         form = ProductForm(instance=product)
     return render(request, 'products/product_form.html', {'form': form, 'action': 'Update'})
+@login_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Product deleted successfully.')
+        return redirect('product_list')
+    return render(request, 'products/product_confirm_delete.html', {'product': product})
 
 # View Cart (Dummy for now, implement as per your logic)
 @login_required
