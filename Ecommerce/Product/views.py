@@ -21,14 +21,7 @@ def signup_view(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            send_mail(
-                'Welcome to Our Platform',
-                'Thank you for signing up!',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
-            )
+            form.save()
             return redirect('login')
     else:
         form = SignUpForm()
