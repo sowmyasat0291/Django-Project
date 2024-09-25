@@ -44,3 +44,50 @@ button {
 button:hover {
     background-color: #c9302c;
 }
+
+.cart-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.product-image {
+    width: 100px; /* Set appropriate width */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 20px;
+}
+
+.product-details {
+    flex-grow: 1; /* Allow this div to take available space */
+}
+
+.product-action {
+    margin-left: 10px;
+}
+
+.remove-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    background-color: #ff1a1a; /* Darker red on hover */
+}
+
+.empty-cart {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #888;
+}

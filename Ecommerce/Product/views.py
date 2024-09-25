@@ -110,7 +110,12 @@ def delete_product(request, pk):
 def cart_view(request):
     cart, _ = Cart.objects.get_or_create(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart)  # Use CartItem to get cart items
-    total_amount = sum(item.product.price * item.quantity for item in cart_items)
+
+    # Create a list to hold calculated totals for items
+    for item in cart_items:
+        item.total_price = item.product.price * item.quantity  # Calculate total for each item
+
+    total_amount = sum(item.total_price for item in cart_items)  # Calculate total amount for the cart
 
     context = {
         'cart_items': cart_items,
