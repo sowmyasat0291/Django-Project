@@ -108,7 +108,7 @@ def delete_product(request, pk):
 # View Cart (Dummy for now, implement as per your logic)
 @login_required
 def cart_view(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart = Cart.objects.get_or_create(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart)
     total_amount = sum(item.product.price * item.quantity for item in cart_items)
     
