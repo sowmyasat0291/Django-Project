@@ -23,15 +23,21 @@ def cart_detail(request):
     items = CartItem.objects.filter(cart=cart)  # Fetch items in the cart
 
     valid_items = []
+    total_amount = 0
     for item in items:
         try:
             product = item.product  # Accessing the product relationship
             valid_items.append(item)
+            total_amount += item.quantity * product.price  # Calculate total amount
+
         except Product.DoesNotExist:
             # Handle the case where the product does not exist
             item.delete()  # Remove the item if the product is gone
 
-    return render(request, 'cart/cart_detail.html', {'items': valid_items})  # Render the cart detail template
+    return render(request, 'cart/cart_detail.html', {
+        'items': valid_items,
+        'total_amount': total_amount
+    })  # Render the cart detail template
 
 @login_required
 def cart_remove(request, product_id):
