@@ -1,11 +1,11 @@
 from django import forms
-from .models import Cart
+from .models import CartItem
 
-class CartForm(forms.ModelForm):
+class CartItemForm(forms.ModelForm):
     class Meta:
-        model = Cart
-        fields = ['product', 'quantity']
+        model = CartItem
+        fields = ['product', 'quantity']  # Specify the fields you want in the form
         widgets = {
-            'product': forms.HiddenInput(),  # Hide the product field
-            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),  # Display quantity field as a number input
+            'product': forms.HiddenInput(),  # Hide the product field in the form
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),  # Display quantity as a number input
         }

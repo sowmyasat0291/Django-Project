@@ -36,9 +36,11 @@
             </div>
             <div>
                 
-                <a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to Cart</a>
             </div>
         </div>
+        {% empty %}
+            <p>No products available.</p>
         {% endfor %}
     </div>
 
