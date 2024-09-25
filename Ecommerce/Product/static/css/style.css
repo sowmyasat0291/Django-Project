@@ -167,3 +167,29 @@ a:hover {
     background: #4CAF50;
     color: white;
 }
+
+.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #333;
+}
+
+.navbar li {
+    margin-right: 20px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white; /* Adjust link color */
+}
+
+.navbar span {
+    font-size: 1.5em; /* Adjust icon size */
+    margin-right: 5px; /* Space between icon and text */
+}
+
+.navbar a:hover {
+    opacity: 0.7; /* Change opacity on hover */
+}
