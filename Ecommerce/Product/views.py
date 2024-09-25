@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 from .forms import SignUpForm, ProductForm
-from Cart.models import Cart, CartItem  # Import the Cart and CartItem models
+from Cart.models import Cart
 from .models import Product
 
 # Redirect to signup or login based on user authentication
@@ -108,15 +108,14 @@ def delete_product(request, pk):
 # View Cart (Dummy for now, implement as per your logic)
 @login_required
 def cart_view(request):
-    cart = Cart.objects.get_or_create(user=request.user)
-    cart_items = CartItem.objects.filter(cart=cart)
+    cart_items = Cart.objects.filter(user=request.user)
     total_amount = sum(item.product.price * item.quantity for item in cart_items)
-    
+
     context = {
         'cart_items': cart_items,
         'total_amount': total_amount,
     }
-    return render(request, 'cart/cart.html')
+    return render(request, 'cart/cart.html', context)
 
 # Logout view
 def logout_view(request):
