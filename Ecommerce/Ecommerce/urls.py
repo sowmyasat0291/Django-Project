@@ -16,14 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from Product.views import index_view  # Import the index_view
+
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', index_view, name='index'),  # Root URL pointing to index_view
+    path('admin/', admin.site.urls), # Admin URL pointing to admin(optional)
     path('', include('Product.urls')),  # Including the product URLs
     path('', include('Cart.urls')),  # Assuming your cart app is named 'Cart'
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # JWT Token endpoint
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # JWT Token refresh
-
 ]
