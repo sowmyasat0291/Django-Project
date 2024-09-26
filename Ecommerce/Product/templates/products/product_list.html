@@ -24,6 +24,7 @@
             <img src="{{ product.banner.url }}" alt="{{ product.name }} Image" class="product-image">
             {% endif %}
             <h2 class="product-name">{{ product.name }}</h2>
+            <p class="product-description">{{ product.description }}</p>
             <p class="product-price">₹{{ product.price }}</p>
             <div class="product-actions">
                 <form action="{% url 'update_product' product.pk %}" method="get">

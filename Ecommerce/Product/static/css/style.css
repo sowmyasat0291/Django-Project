@@ -174,6 +174,8 @@ a:hover {
     padding: 0;
     display: flex;
     background-color: #333;
+    width: 60px; /* Adjust logo width */
+    margin-right: 30px; /* Space between logo and text */
 }
 
 .navbar li {
@@ -183,10 +185,13 @@ a:hover {
 .navbar a {
     text-decoration: none;
     color: white; /* Adjust link color */
+    width: 60px; /* Adjust logo width */
+    margin-right: 30px; /* Space between logo and text */
+    font-size: 2em; /* Increase icon size */
 }
 
-.navbar span {
-    font-size: 1.5em; /* Adjust icon size */
+.navbar .icon {
+    font-size: 2em; /* Increase icon size */
     margin-right: 5px; /* Space between icon and text */
 }
 
