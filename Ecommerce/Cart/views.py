@@ -1,7 +1,8 @@
-# views.py
+# Cart\views.py
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Cart, CartItem
 from Product.models import Product
 
@@ -10,16 +11,19 @@ def cart_add(request, product_id):
     if not request.user.is_authenticated:  # Check if user is authenticated
         return redirect('login')
 
-    product = get_object_or_404(Product, id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)  # Ensure one cart per user
-
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    product = Product.objects.get(id=product_id) 
     # Try to get the existing cart item or create a new one
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
     if not created:
         cart_item.quantity += 1  # Increment quantity for existing item
         cart_item.save()
-
+    else:
+        cart_item.quantity = 1  # Set quantity to 1 if it was just created
+        cart_item.save()
+    
+    messages.success(request, f'{product.name} has been added to your cart.')
     return redirect('cart_view')  # Ensure this URL is defined correctly in your urls.py
 
 @login_required

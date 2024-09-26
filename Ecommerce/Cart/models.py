@@ -6,8 +6,7 @@ from Product.models import Product
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Ensures one cart per user
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Ensure this is defined
-
+    
 
     def __str__(self):
         return f"Cart for {self.user.username}"

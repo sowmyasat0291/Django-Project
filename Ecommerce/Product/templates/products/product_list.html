@@ -15,7 +15,6 @@
                 <li><a href="{% url 'product_list' %}"><span class="icon">👜</span></a></li>
                 <li><a href="{% url 'cart' %}"><span class="icon">🛒</span></a></li>
                 <li><a href="{% url 'logout' %}"><span class="icon">↪</span></a></li>
-
             </ul>
         </nav>
     </header>
@@ -44,8 +43,11 @@
                 </form>
             </div>
             <div>
-                
-                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to Cart</a>
+                <!-- Add to Cart Form -->
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Add to Cart</button>
+                </form>
             </div>
         </div>
         {% empty %}
