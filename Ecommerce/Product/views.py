@@ -87,7 +87,7 @@ def product_list(request):
 
 # Create a new product
 def create_product(request):
-    if not request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
+    if request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES)
             if form.is_valid():
@@ -104,7 +104,7 @@ def create_product(request):
 
 # Update a product
 def update_product(request, pk):
-    if not request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
+    if request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
         product = get_object_or_404(Product, pk=pk)
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES, instance=product)
@@ -122,7 +122,7 @@ def update_product(request, pk):
 
 # Delete a product
 def delete_product(request, pk):
-    if not request.user.is_authenticated or request.user.groups.filter(name='Admin').exists():
+    if request.user.is_authenticated or request.user.groups.filter(name='Admin').exists():
         product = get_object_or_404(Product, pk=pk)
         if request.method == 'POST':
             product.delete()
