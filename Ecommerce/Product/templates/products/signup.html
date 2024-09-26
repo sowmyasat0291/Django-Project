@@ -30,6 +30,16 @@
         <small class="form-text">Enter the same password as before, for verification.</small>
       </div>
 
+      <!-- Role Selection Dropdown -->
+      <div class="form-group">
+        <label for="role">Select Role:</label>
+        <select name="role" id="role" required>
+          <option value="Buyer">Buyer</option>
+          <option value="Seller">Seller</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
+
       <button type="submit">Sign Up</button>
     </form>
     <a href="{% url 'login' %}">Already have an account? Login</a>

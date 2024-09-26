@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -13,23 +13,32 @@ from .models import Product
 
 # Redirect to signup or login based on user authentication
 def index_view(request):
-    if request.user is not None:  # Check if user is authenticated using JWT middleware
+    if request.user.is_authenticated:  # Check if user is authenticated using JWT middleware
         return redirect('product_list')
     return render(request, 'products/welcome.html')
 
+def create_groups():
+    groups = ['Admin', 'Seller', 'Buyer']
+    for group in groups:
+        Group.objects.get_or_create(name=group)
+
 # Signup view
 def signup_view(request):
+    create_groups()  # Create groups if they don't exist
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            role = request.POST.get('role')  # Get the selected role
+            if role:
+                group = Group.objects.get(name=role)  # Assuming you've created groups for roles
+                group.user_set.add(user)  # Assign user to the selected group
             return redirect('login')
     else:
         form = SignUpForm()
     return render(request, 'products/signup.html', {'form': form})
 
 # Login view (JWT Authentication)
-# Login view (JWT Authentication with roles)
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -61,7 +70,7 @@ def login_view(request):
 
 # List and search products
 def product_list(request):
-    if request.user is None:  # Check if user is authenticated
+    if not request.user.is_authenticated:  # Check if user is authenticated
         return redirect('login')
 
     search_query = request.GET.get('search', '')
@@ -77,55 +86,57 @@ def product_list(request):
     return render(request, 'products/product_list.html', {'page_obj': page_obj})
 
 # Create a new product
-# Only allow admins to create a new product
 def create_product(request):
-    if request.user.role != 'Admin':
-        return redirect('product_list')  # Non-admins are redirected
+    if not request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Product created successfully.')
+                return redirect('product_list')
+        else:
+            form = ProductForm()
 
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Product created successfully.')
-            return redirect('product_list')
-    else:
-        form = ProductForm()
+        return render(request, 'products/product_form.html', {'form': form, 'action': 'Create'})
+    
+    messages.error(request, 'You do not have permission to create a product.')
+    return redirect('product_list')
 
-    return render(request, 'products/product_form.html', {'form': form, 'action': 'Create'})
-
-# Only allow admins to update a product
+# Update a product
 def update_product(request, pk):
-    if request.user.role != 'Admin':
-        return redirect('product_list')  # Non-admins are redirected
+    if not request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
+        product = get_object_or_404(Product, pk=pk)
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES, instance=product)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Product updated successfully.')
+                return redirect('product_list')
+        else:
+            form = ProductForm(instance=product)
 
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Product updated successfully.')
-            return redirect('product_list')
-    else:
-        form = ProductForm(instance=product)
+        return render(request, 'products/product_form.html', {'form': form, 'action': 'Update'})
+    
+    messages.error(request, 'You do not have permission to update this product.')
+    return redirect('product_list')
 
-    return render(request, 'products/product_form.html', {'form': form, 'action': 'Update'})
-
-# Only allow admins to delete a product
+# Delete a product
 def delete_product(request, pk):
-    if request.user.role != 'Admin':
-        return redirect('product_list')  # Non-admins are redirected
+    if not request.user.is_authenticated or request.user.groups.filter(name='Admin').exists():
+        product = get_object_or_404(Product, pk=pk)
+        if request.method == 'POST':
+            product.delete()
+            messages.success(request, 'Product deleted successfully.')
+            return redirect('product_list')
 
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        product.delete()
-        messages.success(request, 'Product deleted successfully.')
-        return redirect('product_list')
-
-    return render(request, 'products/product_confirm_delete.html', {'product': product})
+        return render(request, 'products/product_confirm_delete.html', {'product': product})
+    
+    messages.error(request, 'You do not have permission to delete this product.')
+    return redirect('product_list')
 
 # View Cart
 def cart_view(request):
-    if request.user is None:  # Check if user is authenticated
+    if not request.user.is_authenticated:  # Check if user is authenticated
         return redirect('login')
 
     cart, _ = Cart.objects.get_or_create(user=request.user)
