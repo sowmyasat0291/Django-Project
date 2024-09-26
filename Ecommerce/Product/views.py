@@ -143,10 +143,10 @@ def cart_view(request):
     cart_items = CartItem.objects.filter(cart=cart)
 
     # Create a list to hold calculated totals for items
+    total_amount = 0
     for item in cart_items:
-        item.total_price = item.product.price * item.quantity
-
-    total_amount = sum(item.total_price for item in cart_items)
+        item.total_price = item.product.price * item.quantity  # Calculate total price for each item
+        total_amount += item.total_price  # Add to the total amount
 
     context = {
         'cart_items': cart_items,

@@ -7,6 +7,9 @@ from Product.models import Product
 
 @login_required
 def cart_add(request, product_id):
+    if not request.user.is_authenticated:  # Check if user is authenticated
+        return redirect('login')
+
     product = get_object_or_404(Product, id=product_id)
     cart, created = Cart.objects.get_or_create(user=request.user)  # Ensure one cart per user
 
@@ -17,8 +20,7 @@ def cart_add(request, product_id):
         cart_item.quantity += 1  # Increment quantity for existing item
         cart_item.save()
 
-    return redirect('cart_detail')  # Ensure this URL is defined
-
+    return redirect('cart_view')  # Ensure this URL is defined correctly in your urls.py
 
 @login_required
 def cart_detail(request):
