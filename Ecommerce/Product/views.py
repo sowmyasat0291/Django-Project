@@ -29,6 +29,7 @@ def signup_view(request):
     return render(request, 'products/signup.html', {'form': form})
 
 # Login view (JWT Authentication)
+# Login view (JWT Authentication with roles)
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -37,9 +38,10 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
-                # Create JWT token
+                # Create JWT token with roles
                 payload = {
                     'user_id': user.id,
+                    'role': user.groups.first().name if user.groups.exists() else 'User',  # Get user role
                     'exp': datetime.utcnow() + timedelta(minutes=30),  # Token expires in 30 mins
                     'iat': datetime.utcnow()
                 }
@@ -75,9 +77,10 @@ def product_list(request):
     return render(request, 'products/product_list.html', {'page_obj': page_obj})
 
 # Create a new product
+# Only allow admins to create a new product
 def create_product(request):
-    if request.user is None:  # Check if user is authenticated
-        return redirect('login')
+    if request.user.role != 'Admin':
+        return redirect('product_list')  # Non-admins are redirected
 
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -87,13 +90,13 @@ def create_product(request):
             return redirect('product_list')
     else:
         form = ProductForm()
-    
+
     return render(request, 'products/product_form.html', {'form': form, 'action': 'Create'})
 
-# Update an existing product
+# Only allow admins to update a product
 def update_product(request, pk):
-    if request.user is None:  # Check if user is authenticated
-        return redirect('login')
+    if request.user.role != 'Admin':
+        return redirect('product_list')  # Non-admins are redirected
 
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -104,19 +107,20 @@ def update_product(request, pk):
             return redirect('product_list')
     else:
         form = ProductForm(instance=product)
-    
+
     return render(request, 'products/product_form.html', {'form': form, 'action': 'Update'})
 
-# Delete a product
+# Only allow admins to delete a product
 def delete_product(request, pk):
-    if request.user is None:  # Check if user is authenticated
-        return redirect('login')
+    if request.user.role != 'Admin':
+        return redirect('product_list')  # Non-admins are redirected
 
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         product.delete()
         messages.success(request, 'Product deleted successfully.')
         return redirect('product_list')
+
     return render(request, 'products/product_confirm_delete.html', {'product': product})
 
 # View Cart
