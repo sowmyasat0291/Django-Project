@@ -3,6 +3,7 @@ body, h1, h2, p, ul, li {
     margin: 0;
     padding: 0;
     list-style-type: none;
+    text-align: center;
 }
 
 /* Set the body font and background */
@@ -17,61 +18,85 @@ body {
 header {
     background: #4CAF50;
     color: white;
-    padding: 10px 20px;
+    padding: 15px 20px;
     text-align: center;
 }
 
 /* Form container styles */
 .form-container {
-    max-width: 400px; /* Set to a reasonable width */
-    margin: 20px auto; /* Center form on page */
+    max-width: 400px;
+    margin: 20px auto; /* Added margin for spacing */
     padding: 20px;
-    background: #fff; /* White background for the form */
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex; /* Enable flexbox */
-    flex-direction: column; /* Align children in a column */
-    align-items: center; /* Center children horizontally */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: center;
 }
 
 /* Form heading styles */
-.form-container h1 {
+.form-container h2 {
     text-align: center;
-    margin-bottom: 20px; /* Space below heading */
+    margin-bottom: 20px;
 }
 
 /* Form styles */
 form {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 /* Input styles */
+/* Input styles */
 form input[type="text"],
+form input[type="password"],
 form input[type="number"],
 form input[type="file"],
 form select {
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px; /* Space between inputs */
-    text-align: center;
-    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-align: center; /* Center text */
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding and border in width */
 }
+
+/* Focus styles */
+form input[type="text"]:focus,
+form input[type="password"]:focus,
+form input[type="number"]:focus,
+form input[type="file"]:focus,
+form select:focus {
+    border-color: #007bff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Add a subtle glow */
+}
+
 
 /* Button styles */
 form button {
     padding: 10px;
-    background: #4CAF50;
+    background: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    width: 100%; /* Set button to take full width */
+    width: 100%;
+    transition: background 0.3s; /* Smooth transition */
 }
+
 form button:hover {
-    background: #45a049; /* Darker green on hover */
+    background: #0056b3;
 }
 
 /* Back link styles */
@@ -84,26 +109,38 @@ a {
 }
 
 a:hover {
-    text-decoration: underline; /* Underline on hover for better UX */
+    text-decoration: underline;
 }
 
-/* General styling for other elements (like product cards) remains unchanged */
+.input-field {
+    text-align: center; /* Center the text */
+    width: 100%; /* Full width for consistency */
+    padding: 10px; /* Padding */
+    border: 1px solid #ccc; /* Border styling */
+    border-radius: 4px; /* Rounded corners */
+}
+
+/* Product container styles */
 .product-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between cards */
     padding: 20px;
 }
 
+/* Product card styles */
 .product-card {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 10px;
     padding: 10px;
-    width: 200px;
     text-align: center;
+    transition: transform 0.2s; /* Add hover effect */
+}
+
+.product-card:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
 }
 
 /* Image styles */
@@ -168,14 +205,12 @@ a:hover {
     color: white;
 }
 
+/* Navbar styles */
 .navbar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
     display: flex;
+    justify-content: center; /* Center align the navbar items */
     background-color: #333;
-    width: 60px; /* Adjust logo width */
-    margin-right: 30px; /* Space between logo and text */
+    padding: 10px 0; /* Add padding for better spacing */
 }
 
 .navbar li {
@@ -184,17 +219,26 @@ a:hover {
 
 .navbar a {
     text-decoration: none;
-    color: white; /* Adjust link color */
-    width: 60px; /* Adjust logo width */
-    margin-right: 30px; /* Space between logo and text */
+    color: white;
     font-size: 2em; /* Increase icon size */
 }
 
 .navbar .icon {
-    font-size: 2em; /* Increase icon size */
-    margin-right: 5px; /* Space between icon and text */
+    font-size: 2em;
+    margin-right: 5px;
 }
 
 .navbar a:hover {
-    opacity: 0.7; /* Change opacity on hover */
+    opacity: 0.7;
+}
+
+/* Footer styles */
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }

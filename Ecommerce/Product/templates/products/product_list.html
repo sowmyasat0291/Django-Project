@@ -10,6 +10,12 @@
 <body>
     <header>
         <h1>Product List</h1>
+        <nav>
+            <ul class="navbar">
+                <li><a href="{% url 'product_list' %}"><span class="icon">👜</span></a></li>
+                <li><a href="{% url 'cart' %}"><span class="icon">🛒</span></a></li>
+            </ul>
+        </nav>
     </header>
 
     <form method="get" action="{% url 'product_list' %}" class="search-form">
