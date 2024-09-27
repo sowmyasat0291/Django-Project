@@ -11,7 +11,7 @@ def cart_add(request, product_id):
     if not request.user.is_authenticated:  # Check if user is authenticated
         return redirect('login')
 
-    cart, _ = Cart.objects.get_or_create(user=request.user)
+    cart, _  = Cart.objects.get_or_create(user=request.user)
     product = Product.objects.get(id=product_id) 
     # Try to get the existing cart item or create a new one
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
