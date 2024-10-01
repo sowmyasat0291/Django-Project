@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import index_view, signup_view, login_view, logout_view, product_list, create_product, update_product, cart_view, delete_product
+from .views import (index_view, signup_view, login_view, logout_view, product_list, 
+    create_product, update_product, cart_view, delete_product)
 from django.conf import settings
 from django.conf.urls.static import static
 

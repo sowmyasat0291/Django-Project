@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User, Group
 from django.conf import settings
@@ -47,6 +47,7 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
+                login(request, user)
                 # Create JWT token with roles
                 payload = {
                     'user_id': user.id,
@@ -87,7 +88,7 @@ def product_list(request):
 
 # Create a new product
 def create_product(request):
-    if request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
+    if request.user.is_authenticated and request.role in ['Admin', 'Seller']:
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES)
             if form.is_valid():
@@ -96,16 +97,15 @@ def create_product(request):
                 return redirect('product_list')
         else:
             form = ProductForm()
-
         return render(request, 'products/product_form.html', {'form': form, 'action': 'Create'})
-    
     messages.error(request, 'You do not have permission to create a product.')
     return redirect('product_list')
 
+
 # Update a product
 def update_product(request, pk):
-    if request.user.is_authenticated or request.user.groups.filter(name='Admin').exists() or request.user.groups.filter(name='Seller').exists():
-        product = get_object_or_404(Product, pk=pk)
+    product = get_object_or_404(Product, pk=pk)
+    if request.user.is_authenticated and request.role in ['Admin', 'Seller']:
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES, instance=product)
             if form.is_valid():
@@ -114,15 +114,15 @@ def update_product(request, pk):
                 return redirect('product_list')
         else:
             form = ProductForm(instance=product)
-
         return render(request, 'products/product_form.html', {'form': form, 'action': 'Update'})
-    
     messages.error(request, 'You do not have permission to update this product.')
     return redirect('product_list')
 
+
 # Delete a product
 def delete_product(request, pk):
-    if request.user.is_authenticated or request.user.groups.filter(name='Admin').exists():
+    # Only admins can delete products
+    if request.user.is_authenticated and request.user.groups.filter(name='Admin').exists():
         product = get_object_or_404(Product, pk=pk)
         if request.method == 'POST':
             product.delete()
@@ -136,17 +136,17 @@ def delete_product(request, pk):
 
 # View Cart
 def cart_view(request):
-    if not request.user.is_authenticated:  # Check if user is authenticated
+    if not request.user.is_authenticated:
         return redirect('login')
 
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    cart_items = CartItem.objects.filter(cart=cart)
+    # Allow sellers to view all carts, while buyers can only view their own
+    if request.role == 'Seller':
+        cart_items = CartItem.objects.all()  # Sellers can see all cart items
+    else:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        cart_items = CartItem.objects.filter(cart=cart)
 
-    # Create a list to hold calculated totals for items
-    total_amount = 0
-    for item in cart_items:
-        item.total_price = item.product.price * item.quantity  # Calculate total price for each item
-        total_amount += item.total_price  # Add to the total amount
+    total_amount = sum(item.product.price * item.quantity for item in cart_items)
 
     context = {
         'cart_items': cart_items,

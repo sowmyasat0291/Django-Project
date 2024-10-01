@@ -11,16 +11,21 @@
     <h1>Your Shopping Cart</h1>
     <ul>
         {% for item in items %}
-            <li>
-                {{ item.product.name }} - ₹{{ item.product.price }} (Quantity: {{ item.quantity }})
-                <form action="{% url 'cart_remove' item.product.id %}" method="post" style="display:inline;">
+        <li>
+            Product: {{ item.product.name }} - ₹{{ item.product.price }} (Quantity: {{ item.quantity }}) - ID: {{ item.id }}
+                <form action="{% url 'cart_remove' item.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit">Remove</button>
                 </form>
+                
             </li>
         {% empty %}
             <li>Your cart is empty.</li>
         {% endfor %}
     </ul>
+    
+    {% if items %}
+        <h3>Total Amount: ₹{{ total_amount }}</h3>
+    {% endif %}
 </body>
 </html>
