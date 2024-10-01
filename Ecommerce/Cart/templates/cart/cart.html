@@ -10,28 +10,28 @@
 <body>
     <h1>Your Shopping Cart</h1>
     <div class="cart-container">
-        {% if cart_items %}
-         {% for item in cart_items %}
-          <div class="cart-item">
-          <td><img src="{{ item.product.banner.url }}" alt="{{ item.product.name }} Image" class="product-image"></td>
-            <div class="product-details">
-                <h2>{{ item.product.name }}</h2>
-                <p>Quantity: {{ item.quantity }}</p>
-                <p>Price: ₹{{ item.product.price }}</p>
-                <p>Total: ₹{{ item.total_price }}</p>
-            </div>
-            <div class="product-action">
-                <form action="{% url 'cart_remove' item.product.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="remove-button">Remove</button>
-                </form>
-            </div>
-          </div>
-        {% endfor %}
+        {% if items %}  <!-- Changed from cart_items to items -->
+            {% for item in items %}  <!-- Changed from cart_items to items -->
+                <div class="cart-item">
+                    <img src="{{ item.product.banner.url }}" alt="{{ item.product.name }} Image" class="product-image">
+                    <div class="product-details">
+                        <h2>{{ item.product.name }}</h2>
+                        <p>Quantity: {{ item.quantity }}</p>
+                        <p>Price: ₹{{ item.product.price }}</p>
+                        <p>Total: ₹{{ item.total_price }}</p>
+                    </div>
+                    <div class="product-action">
+                        <form action="{% url 'cart_remove' item.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="remove-button">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
         {% else %}
-        <div class="empty-cart">
-            <p>Your cart is empty.</p>
-        </div>
+            <div class="empty-cart">
+                <p>Your cart is empty.</p>
+            </div>
         {% endif %}
     </div>
     <h3>Total Amount: ₹{{ total_amount }}</h3>

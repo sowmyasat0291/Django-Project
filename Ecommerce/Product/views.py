@@ -135,23 +135,24 @@ def delete_product(request, pk):
     return redirect('product_list')
 
 # View Cart
+
 def cart_view(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    # Get or create a cart for the user
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    
+    # Get all cart items for the user's cart
+    cart_items = CartItem.objects.filter(cart=cart)
 
-    # Allow sellers to view all carts, while buyers can only view their own
-    if request.role == 'Seller':
-        cart_items = CartItem.objects.all()  # Sellers can see all cart items
-    else:
-        cart, _ = Cart.objects.get_or_create(user=request.user)
-        cart_items = CartItem.objects.filter(cart=cart)
+    # Calculate total amount using a generator expression
+    total_amount = sum(item.quantity * item.product.price for item in cart_items)
 
-    total_amount = sum(item.product.price * item.quantity for item in cart_items)
-
+    # Prepare the context for the template
     context = {
-        'cart_items': cart_items,
+        'items': cart_items,  # Pass cart items to the template
         'total_amount': total_amount,
     }
+    
+    # Render the cart template
     return render(request, 'cart/cart.html', context)
 
 # Logout view

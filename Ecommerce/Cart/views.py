@@ -1,20 +1,28 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Cart, CartItem
 from Product.models import Product
 
 @login_required
-def add_to_cart(request, product_id):
-    if request.user.groups.filter(name='Buyer').exists():  # Only buyers can add to cart
+def add_to_cart(request, product_id, buyer_username=None):
+    if request.user.groups.filter(name='Buyer').exists() or request.user.groups.filter(name__in=['Admin', 'Seller']).exists():
         product = get_object_or_404(Product, id=product_id)
-        cart, _ = Cart.objects.get_or_create(user=request.user)
+
+        # If the logged-in user is an admin or seller, find the specified buyer's cart
+        if request.user.groups.filter(name__in=['Admin', 'Seller']).exists() and buyer_username:
+            buyer = get_object_or_404(User, username=buyer_username)
+            cart, _ = Cart.objects.get_or_create(user=buyer)
+        else:
+            cart, _ = Cart.objects.get_or_create(user=request.user)  # Normal buyer cart
+
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
         if not created:
-            cart_item.quantity += 1  # Increment quantity if the item is already in the cart
+            cart_item.quantity += 1
         cart_item.save()
         messages.success(request, 'Item added to cart successfully.')
-        return redirect('product_list')  # Redirect to product list or cart view as needed
+        return redirect('product_list')
 
     messages.error(request, 'You do not have permission to add items to the cart.')
     return redirect('product_list')
@@ -22,12 +30,14 @@ def add_to_cart(request, product_id):
 
 @login_required
 def update_cart_item(request, item_id):
-    if request.user.groups.filter(name='Buyer').exists():  # Only buyers can update cart items
-        cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    cart_item = get_object_or_404(CartItem, id=item_id)
+
+    # Allow admins and sellers to update any cart item
+    if request.user.groups.filter(name__in=['Admin', 'Seller']).exists() or cart_item.cart.user == request.user:
         if request.method == 'POST':
             quantity = request.POST.get('quantity')
-            if quantity and quantity.isdigit() and int(quantity) > 0:  # Ensure quantity is valid
-                cart_item.quantity = int(quantity)  # Update quantity
+            if quantity and quantity.isdigit() and int(quantity) > 0:
+                cart_item.quantity = int(quantity)
                 cart_item.save()
                 messages.success(request, 'Cart item updated successfully.')
             else:
@@ -40,8 +50,10 @@ def update_cart_item(request, item_id):
 
 @login_required
 def remove_from_cart(request, item_id):
-    if request.user.groups.filter(name='Buyer').exists():  # Only buyers can remove items
-        cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    cart_item = get_object_or_404(CartItem, id=item_id)
+
+    # Allow admins and sellers to remove any cart item
+    if request.user.groups.filter(name__in=['Admin', 'Seller']).exists() or cart_item.cart.user == request.user:
         cart_item.delete()
         messages.success(request, 'Item removed from cart successfully.')
         return redirect('cart_detail')
@@ -52,15 +64,22 @@ def remove_from_cart(request, item_id):
 
 @login_required
 def cart_detail(request):
-    if request.user.groups.filter(name='Seller').exists():  # If the user is a seller
-        items = CartItem.objects.all()  # Show all cart items across all users
-    else:
-        cart = get_object_or_404(Cart, user=request.user)  # Get the buyer's cart
-        items = cart.items.all()  # Get the items in the buyer's cart
+    cart_items = []
+    total_amount = 0
 
-    total_amount = sum(item.quantity * item.product.price for item in items)
+    if request.user.groups.filter(name__in=['Seller', 'Admin']).exists():
+        # Fetch all cart items if user is an admin or seller
+        cart_items = CartItem.objects.select_related('product').all()
+    elif request.user.groups.filter(name='Buyer').exists():
+        # If the user is a buyer, show their specific cart items
+        try:
+            cart = Cart.objects.get(user=request.user)  # Get the buyer's cart
+            cart_items = CartItem.objects.filter(cart=cart).select_related('product')
+        except Cart.DoesNotExist:
+            cart_items = []
+            messages.info(request, 'Your cart is empty.')
 
-    return render(request, 'cart/cart_detail.html', {
-        'items': items,
-        'total_amount': total_amount,
-    })
+    # Calculate total amount for the displayed cart items
+    total_amount = sum(item.quantity * item.product.price for item in cart_items)
+
+    return render(request, 'cart/cart.html', {'cart_items': cart_items, 'total_amount': total_amount})
