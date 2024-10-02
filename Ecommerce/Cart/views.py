@@ -1,9 +1,16 @@
+#Cart/views.py
+import stripe
+from django.conf import settings
+from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Cart, CartItem
 from Product.models import Product
+
+# Stripe configuration
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @login_required
 def add_to_cart(request, product_id, buyer_username=None):
@@ -83,3 +90,41 @@ def cart_detail(request):
     total_amount = sum(item.quantity * item.product.price for item in cart_items)
 
     return render(request, 'cart/cart.html', {'cart_items': cart_items, 'total_amount': total_amount})
+
+def checkout_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # Fetch the user's cart items
+    cart_items = CartItem.objects.filter(cart__user=request.user)
+
+    # Calculate total amount for the session
+    total_amount = sum(item.quantity * item.product.price for item in cart_items) * 100  # amount in paisa (INR)
+
+    # Create a Stripe Checkout Session
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],  # Allow credit card payments
+        line_items=[{
+            'price_data': {
+                'currency': 'inr',
+                'product_data': {
+                    'name': 'Cart Purchase',
+                },
+                'unit_amount': total_amount,  # Total amount for all items
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=request.build_absolute_uri(reverse('checkout_success')),
+        cancel_url=request.build_absolute_uri(reverse('checkout_cancel')),
+    )
+
+    # Redirect the user to Stripe's hosted checkout page
+    return redirect(session.url, code=303)
+# Success page
+def checkout_success(request):
+    return render(request, 'cart/checkout_success.html')
+
+# Cancel page
+def checkout_cancel(request):
+    return render(request, 'cart/checkout_cancel.html')

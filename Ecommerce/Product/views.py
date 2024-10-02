@@ -1,3 +1,4 @@
+#Product/views.py
 import jwt
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
@@ -144,7 +145,24 @@ def cart_view(request):
     cart_items = CartItem.objects.filter(cart=cart)
 
     # Calculate total amount using a generator expression
-    total_amount = sum(item.quantity * item.product.price for item in cart_items)
+    total_amount = 0
+    for item in cart_items:
+        item.total_price = item.quantity * item.product.price
+        total_amount += item.total_price
+        
+    # Handle the increase/decrease quantity action
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        action = request.POST.get('action')
+        cart_item = get_object_or_404(CartItem, id=item_id, cart=cart)
+
+        if action == 'increase':
+            cart_item.quantity += 1
+        elif action == 'decrease' and cart_item.quantity > 1:
+            cart_item.quantity -= 1
+        
+        cart_item.save()
+        return redirect('cart_view')
 
     # Prepare the context for the template
     context = {

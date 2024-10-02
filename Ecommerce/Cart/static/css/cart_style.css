@@ -1,13 +1,18 @@
+/* General body styling */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
     background-color: #f4f4f4;
 }
 
+/* Main heading styling */
 h1 {
     color: #333;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
+/* Styling for tables */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -27,11 +32,14 @@ th {
     background-color: #f2f2f2;
 }
 
+/* Product image styling */
 .product-image {
-    width: 50px; /* Adjust size as needed */
-    height: auto;
+    width: 100px; /* Adjust size as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 20px;
 }
 
+/* Button styling */
 button {
     background-color: #d9534f; /* Bootstrap danger color */
     color: white;
@@ -39,55 +47,104 @@ button {
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 5px;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
 button:hover {
-    background-color: #c9302c;
+    background-color: #c9302c; /* Darker red on hover */
 }
 
+/* Cart container styling */
 .cart-container {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    max-width: 1200px; /* Maximum width for the cart */
+    margin: auto; /* Center the cart */
+    background-color: white; /* White background for the cart */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
+/* Individual cart item styling */
 .cart-item {
     display: flex;
     align-items: center;
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 15px;
+    background-color: #fff; /* Background for each cart item */
+    border-radius: 4px; /* Rounded corners for cart items */
 }
 
-.product-image {
-    width: 100px; /* Set appropriate width */
-    height: auto; /* Maintain aspect ratio */
-    margin-right: 20px;
-}
-
+/* Product details section */
 .product-details {
     flex-grow: 1; /* Allow this div to take available space */
 }
 
+/* Action buttons styling */
 .product-action {
     margin-left: 10px;
 }
 
+/* Remove button styling */
 .remove-button {
     background-color: #ff4d4d;
     color: white;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
 
 .remove-button:hover {
     background-color: #ff1a1a; /* Darker red on hover */
 }
 
+/* Empty cart message styling */
 .empty-cart {
     text-align: center;
     margin-top: 20px;
     font-size: 1.2em;
     color: #888;
+}
+
+/* Total amount styling */
+h3 {
+    text-align: right;
+    color: #333;
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+/* Update quantity buttons styling */
+.quantity-button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.quantity-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .cart-item {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+        align-items: flex-start;
+    }
+
+    .product-image {
+        width: 80px; /* Adjust size for smaller screens */
+    }
+
+    .product-details {
+        margin-left: 0; /* Remove left margin for smaller screens */
+    }
 }

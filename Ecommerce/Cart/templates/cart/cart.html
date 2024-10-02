@@ -10,16 +10,33 @@
 <body>
     <h1>Your Shopping Cart</h1>
     <div class="cart-container">
-        {% if items %}  <!-- Changed from cart_items to items -->
-            {% for item in items %}  <!-- Changed from cart_items to items -->
+        {% if items %}
+            {% for item in items %}
                 <div class="cart-item">
                     <img src="{{ item.product.banner.url }}" alt="{{ item.product.name }} Image" class="product-image">
                     <div class="product-details">
                         <h2>{{ item.product.name }}</h2>
-                        <p>Quantity: {{ item.quantity }}</p>
                         <p>Price: ₹{{ item.product.price }}</p>
+
+                        <!-- Quantity Update Section -->
+                        <div class="quantity-control">
+                            <p>Quantity: {{ item.quantity }}</p>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                
+                                <!-- Decrease button -->
+                                <button type="submit" name="action" value="decrease" class="quantity-button">-</button>
+
+                                <!-- Increase button -->
+                                <button type="submit" name="action" value="increase" class="quantity-button">+</button>
+                            </form>
+                        </div>
+
                         <p>Total: ₹{{ item.total_price }}</p>
                     </div>
+
+                    <!-- Remove button -->
                     <div class="product-action">
                         <form action="{% url 'cart_remove' item.id %}" method="post">
                             {% csrf_token %}
@@ -35,5 +52,9 @@
         {% endif %}
     </div>
     <h3>Total Amount: ₹{{ total_amount }}</h3>
+
+    <!-- Checkout Button -->
+    <a href="{% url 'checkout' %}" class="btn">Proceed to Checkout</a>
+
 </body>
 </html>
