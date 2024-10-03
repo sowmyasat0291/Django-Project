@@ -15,3 +15,4 @@ add to cart can be done only by buyer not ny admin or seller
 so i need to make authorization changes to admin & buyer in managing cart list.
 admin remove access for checkout order.
 seller cant view cart list and cant do checkout order.Do this tomorrow.
+once i process payment checkout and got success message it has returned to product list but when i check cart list it still contains existing products in cart list instead of cart empty list.

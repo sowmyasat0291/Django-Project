@@ -99,7 +99,12 @@ def checkout_view(request):
     cart_items = CartItem.objects.filter(cart__user=request.user)
 
     # Calculate total amount for the session
-    total_amount = sum(item.quantity * item.product.price for item in cart_items) * 100  # amount in paisa (INR)
+    total_amount = sum(item.quantity * item.product.price for item in cart_items) * 100 
+     # amount in paisa (INR)
+
+    if total_amount <= 0:
+        messages.error(request, 'Your cart is empty, add items before proceeding to checkout.')
+        return redirect('cart_detail')
 
     # Create a Stripe Checkout Session
     session = stripe.checkout.Session.create(
@@ -122,9 +127,28 @@ def checkout_view(request):
     # Redirect the user to Stripe's hosted checkout page
     return redirect(session.url, code=303)
 # Success page
+@login_required
 def checkout_success(request):
+    try:
+        # Fetch the user's cart
+        cart = Cart.objects.get(user=request.user)
+        cart_items = CartItem.objects.filter(cart=cart)
+
+        # Clear the cart items after successful payment
+        cart_items.delete()
+
+        # Optionally, you can delete the cart itself if needed
+        # cart.delete()
+
+        # Add success message
+        messages.success(request, 'Payment completed successfully! Your cart has been cleared.')
+    except Cart.DoesNotExist:
+        messages.error(request, 'No cart found for this user.')
+
+    # Render the checkout success template
     return render(request, 'cart/checkout_success.html')
 
 # Cancel page
 def checkout_cancel(request):
+    messages.error(request, 'Payment was cancelled.')
     return render(request, 'cart/checkout_cancel.html')
