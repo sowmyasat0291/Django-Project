@@ -138,6 +138,11 @@ def delete_product(request, pk):
 # View Cart
 
 def cart_view(request):
+    # Restrict Sellers from viewing the cart
+    if request.user.groups.filter(name='Seller').exists():
+        messages.error(request, 'Sellers are not allowed to view the cart.')
+        return redirect('product_list')
+    
     # Get or create a cart for the user
     cart, _ = Cart.objects.get_or_create(user=request.user)
     

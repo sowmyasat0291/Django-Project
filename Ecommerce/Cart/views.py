@@ -94,6 +94,11 @@ def cart_detail(request):
 def checkout_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
+    
+    # Prevent Admin from accessing the checkout process
+    if request.user.groups.filter(name='Admin').exists():
+        messages.error(request, 'Admins are not allowed to perform a checkout.')
+        return redirect('product_list')
 
     # Fetch the user's cart items
     cart_items = CartItem.objects.filter(cart__user=request.user)
