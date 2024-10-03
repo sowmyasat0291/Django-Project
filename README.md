@@ -9,9 +9,6 @@ add to cart can be done only by buyer not ny admin or seller
  jack-buyer,
   Alice-buyer, 
   David-seller
-  as admin i can make changes to product list to add,update or delete and can add product to cart list and remove any existing product and also decrease or increase quantity of product and do checkout process.
-  as seller can make changes to product list to add,update or delete and can add product to cart list and remove any existing product and also decrease or increase quantity of product and do checkout order.
+  as admin i can make changes to product list to add,update or delete and can add product to cart list and remove any existing product and also decrease or increase quantity of product but cant do checkout process.
+  as seller can make changes to product list to add,update or delete and no access to cart list and checkout process.
   as buyer can just view product list and make changes to cart list like add product, update quantity, remove product and do checkout product list.
-so i need to make authorization changes to admin & buyer in managing cart list.
-admin remove access for checkout order.
-seller cant view cart list and cant do checkout order.Do this tomorrow.
