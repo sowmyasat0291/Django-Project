@@ -111,23 +111,41 @@ def checkout_view(request):
         messages.error(request, 'Your cart is empty, add items before proceeding to checkout.')
         return redirect('cart_detail')
 
-    # Create a Stripe Checkout Session
+    # Create a new Stripe Checkout Session
     session = stripe.checkout.Session.create(
-        payment_method_types=['card'],  # Allow credit card payments
-        line_items=[{
-            'price_data': {
-                'currency': 'inr',
-                'product_data': {
-                    'name': 'Cart Purchase',
-                },
-                'unit_amount': total_amount,  # Total amount for all items
+    
+    # Specify the types of payment methods allowed in the session (in this case, only card payments)
+    payment_method_types=['card'],
+    
+    # Define the items being purchased (the cart items)
+    line_items=[{
+        'price_data': {
+            # The currency in which the payment is made (INR for Indian Rupees)
+            'currency': 'inr',
+            
+            # Details of the product being purchased (in this case, a general "Cart Purchase" description)
+            'product_data': {
+                'name': 'Cart Purchase',  # Name that will appear in the checkout
             },
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url=request.build_absolute_uri(reverse('checkout_success')),
-        cancel_url=request.build_absolute_uri(reverse('checkout_cancel')),
-    )
+            
+            # The total amount to be charged for the cart items (in **paisa**, i.e., 1/100 of a Rupee)
+            # This converts the total amount from Rupees to Paisa (Stripe expects the amount in the smallest currency unit)
+            'unit_amount': total_amount,  
+        },
+        
+        # The quantity for this product (in this case, the checkout will consider all cart items as a single purchase unit)
+        'quantity': 1,
+    }],
+    
+    # Mode of the checkout session, here 'payment' indicates it's a one-time payment
+    mode='payment',
+    
+    # URL to redirect to after a successful payment (this is the 'checkout_success' view in your Django app)
+    success_url=request.build_absolute_uri(reverse('checkout_success')),
+    
+    # URL to redirect to if the user cancels the payment (this is the 'checkout_cancel' view in your Django app)
+    cancel_url=request.build_absolute_uri(reverse('checkout_cancel')),
+)
 
     # Redirect the user to Stripe's hosted checkout page
     return redirect(session.url, code=303)
